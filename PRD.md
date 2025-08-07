@@ -1,102 +1,129 @@
-# Qwen Chat Enhancer – Product Requirements Document (PRD)
+# Qwen Chat with Superpowers!
+Folders, Search, Qwen Store, Image Gallery, Voice Qwen, Export, Custom Prompts, Prompt Chains, Hidden Models
 
-_Last updated: 2025-08-07_
+⭐️⭐️⭐️⭐️⭐️
 
-## 1 Overview
-The **Qwen Chat Enhancer** is a browser extension that upgrades the user experience on Qwen Chat by adding powerful organisation, productivity and automation features.  
-This PRD captures the product vision, scope and phased delivery plan. It will serve as the primary reference for engineering, design and QA throughout development.
+### Local-First, Privacy-First Architecture
 
-## 2 Goals & Non-Goals
-### 2.1 Goals
-1. Provide advanced chat organisation (folders, search, pinning, archiving).  
-2. Boost user productivity with prompt history, slash menu, smart-replace, and quick actions.  
-3. Simplify knowledge retrieval through conversation referencing and export.  
-4. Maintain a **100 % local-only** data model—no external database, everything stored in the browser (IndexedDB / `chrome.storage`).  
-5. Ship an MVP within three weeks, followed by incremental feature drops.
+All core features work 100 % locally inside your browser. No data ever leaves your machine unless **you** explicitly decide to export or share it. Conversation history, notes, prompt libraries, and settings are saved in `IndexedDB` / `localStorage`, allowing Qwen Chat to function fully offline. Any cloud-based services (e.g., Public Prompts, Qwen Store) are strictly optional and disabled by default.
 
-### 2.2 Non-Goals
-* Cloud sync, multi-device sync.  
-* Collaboration / real-time sharing.  
-* Mobile browsers (v1 will target desktop Chromium + Firefox).
+## New Pro Features
 
-## 3 User Stories & Features
-| ID | User Story | Feature(s) | Priority |
-|----|------------|------------|----------|
-| F-01 | *As a power-user I want to group chats in folders* | Manual & automatic folder creation; drag-drop; colour coding | P0 |
-| F-02 | *As a user I want to run saved prompts anywhere* | Right-click context-menu → Run Prompt | P0 |
-| F-03 | *I need to capture my screen for the chat* | “Send Screenshot” right-click action | P0 |
-| F-04 | *I want to reference past chats inside the current chat* | Conversation reference picker | P0 |
-| F-05 | *Old chats clutter my sidebar* | Auto-archive / auto-delete after N days | P1 |
-| F-06 | *I must quickly find a message* | Global search + highlight | P1 |
-| F-07 | *I wish to export chats* | Export selected convos to PDF / txt / json / md | P1 |
-| F-08 | *I need prompt productivity* | Slash menu, prompt history, favourites, templates | P0 |
-| F-09 | *I want message utilities* | Pin, timestamps, word/char count, copy modes | P2 |
-| F-10 | *I need automation* | Prompt chains, auto-splitter, smart-replace | P2 |
+📚 **Advanced Prompt Manager** – Manage all your prompts in one place with **NO LIMIT**
 
-## 4 Architecture
-```
-┌──────────────────────────────┐
-│   Background Service-Worker  │
-│  • Context-menus             │
-│  • Alarms (auto-cleanup)     │
-│  • Screenshot capture        │
-└─────────────┬────────────────┘
-              │ runtime.sendMessage
-┌─────────────▼────────────────┐  shadow-DOM root
-│     Content-Script(s)        │  + React UI mounts
-│  • Sidebar (folders, search) │
-│  • Prompt enhancer           │
-│  • DOM adapters              │
-└─────────────┬────────────────┘
-              │ Dexie / storage.local
-┌─────────────▼────────────────┐
-│          IndexedDB           │ (local-only, no cloud)
-└──────────────────────────────┘
-```
-* **Framework** – React + UnoCSS, bundled via **WXT** (already in repo).  
-* **State** – Dexie (IndexedDB wrapper). For lightweight keys (settings) we mirror to `browser.storage.local`.
-* **Sync across tabs** – `BroadcastChannel`.
+📝 **Notes** – Save notes for each chat and access them later. Stored locally and fully searchable.
 
-## 5 Data Schema (v1)
-```ts
-Conversations { id, title, createdAt, updatedAt, folderId?, archived }
-Messages      { id, convId, role, content, createdAt, pinned }
-Folders       { id, parentId?, name, color, order, pinned }
-Prompts       { id, title, template, favorite, createdAt }
-PromptHistory { id, content, createdAt, favorite }
-Settings      { key, value }
-```
+🌉 **Image Gallery** – View all generated images in one place. Read the prompt, search images, download all images, and more.
 
-## 6 Phased Delivery Plan
-| Phase | Duration | Scope |
-|-------|----------|-------|
-| 0 – Kick-off | 1 day | Scaffold `packages/qwen-enhancer`, CI, lint, test harness |
-| 1 – Core Productivity | 1 week | Slash menu, prompt history, right-click prompt runner |
-| 2 – Organisation | 1 week | Folder sidebar, drag-drop, auto-folder for Custom GPTs, timestamps |
-| 3 – Search & Export | 1 week | Global search, highlight, export, screenshot action |
-| 4 – Maintenance Automations | 1 week | Auto-archive/delete, prompt chains, auto-splitter, smart-replace |
-| 5 – Polish & QA | 1 week | Model switcher, word count, copy modes, resizable sidebar, exhaustive testing |
+🔄 **Automatic Folder Creation** – Automatically generate folders for conversations created with Custom Qwen Apps.
 
-Total MVP (Phases 0-3) ≈ **3 weeks**. Full v1 ≈ **6 weeks**.
+🔊 **Side-by-Side Voice Mode** – Use Qwen Chat advanced voice mode while keeping the full conversation in view.
 
-## 7 Success Metrics
-* <200 ms content-script injection time (cold).  
-* Bundle ≤150 kB gzip.  
-* No console errors on Qwen Chat.  
-* Unit test coverage ≥80 % for utilities.  
-* 0 P0 bugs during 1-week beta.
+🖱️ **Right-Click Menu** – Instantly access and run your custom prompts on any website from the right-click menu.
 
-## 8 Risks & Mitigations
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Qwen DOM changes | Medium | High | Keep selectors centralised; E2E alerts |
-| IndexedDB quota | Low | Medium | Purge when archived/deleted |
-| Manifest v3 API limits | Low | Medium | Performance budgets, code-splitting |
+🌉 **Send Screenshot with Right-Click** – Quickly send a screenshot of any page to Qwen Chat via the context menu.
 
-## 9 Open Questions
-1. Will Qwen expose a public conversation export API? If not, we will rely on DOM scraping.  
-2. Does Qwen block `tabs.captureVisibleTab` on the main domain? If yes, fallback: use off-screen `chrome.tabCapture`?
+🤑 **Enhanced Qwen Store** – Discover tens of thousands of custom Qwen Apps and try them with one click!
+
+🔗 **Reference Conversations** – Effortlessly reference one or more past conversations inside the current conversation.
+
+🔁 **Auto Delete & Auto Archive** – Optionally delete or archive old messages automatically after a set number of days.
+
+⭐️⭐️⭐️⭐️⭐️
 
 ---
-_End of PRD._
+
+## ★ Chat Management for Qwen Chat
+
+• 🗂 **Folders & Subfolders** – Create folders and subfolders to organise your chats. Assign colours, drag-and-drop to reorder, pin important folders, and drop chats into the Trash to delete.
+
+• 🗺️ **Minimap** – A reduced overview of the entire conversation on the right edge of the screen.
+
+• 📥 **Export** – Select and export any number of chats into multiple formats (PDF, TXT, JSON, MD).
+
+• 🔎 **Search & Highlight** – Search through all previous chats and highlight results for quick review.
+
+• 📌 **Pinned Messages** – Pin important messages and access them instantly via a quick-navigation sidebar.
+
+• 🗑️ **Group Deletion** – Select and delete multiple chats at once.
+
+• 🕰️ **Timestamps** – Precise timestamps for all chats and individual messages.
+
+## ★ Prompt Management for Qwen Chat
+
+• ⛓️ **Prompt Chains** – Save and run a series of prompts as a chain.
+
+• ⚡️ **Auto-Complete Menu** – Type `/` to open a menu of all your prompts right above the input box.
+
+• 🔙 **Prompt History** – Every prompt you use is saved privately on your device. Browse, favourite, or export them at any time.
+
+• 🔼🔽 **Quick Access** – Navigate your prompt history with the Up/Down arrow keys.
+
+• ⭐ **Favourite Prompts** – Mark any prompt as a favourite to access it faster.
+
+• 📄 **Prompt Templates** – Use `{{double curly brackets}}` to create variables in your prompts.
+
+• 🔍 **Search Function** – Search your prompt history and thousands of public prompts from the community.
+
+• 📜 **Public Prompts** – Discover, upvote, and share prompts. Filter by category, language, and popularity.
+
+• 🔗 **Prompt Sharing** – Share a direct link to a community prompt with one click.
+
+## ★ Language & Style Controls
+
+• 🌍 **Language Selection** – Change the response language with one click (supports 190+ languages).
+
+• 🎭 **Tone & Writing Style** – Instantly adjust tone and writing style of Qwen’s responses.
+
+## ★ Utilities for Qwen Chat
+
+• ⮐ **Disable Enter to Send** – Require Ctrl/Cmd + Enter to submit a prompt.
+
+• 👥 **Custom Instruction Profiles** – Create multiple instruction profiles and switch between them with a click.
+
+• ✂️ **Auto Splitter** – Automatically split long inputs into smaller chunks and send them sequentially.
+
+• 🗒 **Auto Summarise** – Summarise long text automatically so you can ask questions quickly.
+
+• 📏 **Custom Conversation Width** – Adjust the conversation width to your preference.
+
+• 🔄 **Smart Replace** – Automatically replace predefined phrases with longer text while typing.
+
+• 🖱️ **Auto Click** – Auto-click your favourite prompt button after each response.
+
+• 📊 **Word & Character Count** – Live counters for both user inputs and Qwen’s responses.
+
+• 🎛 **Model Switcher** – Switch models (Qwen-Plus, Qwen-Lite, etc.) mid-conversation and see which model was used for each response.
+
+• 📋 **Copy & Paste** – Copy chats with one click while preserving formatting (plain text, Markdown, or HTML).
+
+• 🕶️ **Copy Mode** – Choose to copy both user input and response or only the response.
+
+• ⌨️ **Short Keys** – Access popular features via keyboard shortcuts.
+
+• ⏫⏬ **Scroll Controls** – Jump to the top/bottom or scroll one message at a time.
+
+• 📐 **Resizable Sidebar** – Resize the sidebar for a better overview of long conversation titles.
+
+• 🗄️ **Newsletter Archive** – Browse the full newsletter archive directly inside Qwen Chat.
+
+---
+
+> **Note:** All features are subject to change as we continue to improve Qwen Chat. Your feedback is invaluable—please let us know which superpowers you’d like to see next!
+
+---
+
+## Implementation Phases (Roadmap)
+
+| Phase | Name | Goal & Key Deliverables |
+|-------|------|-------------------------|
+| **0** | Technical Spike & Scaffold | • Decide on browser-extension framework (Manifest V3, Vite + React + TypeScript).<br>• Integrate local Qwen model API or remote endpoint behind a feature flag.<br>• Set up linting, testing, CI, and release pipeline. |
+| **1** | MVP – Local Chat Core | • Basic chat UI (single conversation).<br>• Local storage (IndexedDB) for conversations.<br>• Settings page (theme, language, model selection).<br>• Minimal notes per message.<br>• Offline-first operation verified. |
+| **2** | Local Superpowers | • Folder & sub-folder management.<br>• Export (PDF/TXT/JSON/MD).<br>• Search & highlight across chats.<br>• Pinned messages, timestamps, minimap.<br>• Group deletion & trash bin. |
+| **3** | Prompt Management Suite | • Prompt history (local).<br>• Prompt autocomplete menu (`/`).<br>• Prompt templates & variables.<br>• Favourite & search prompts.<br>• Prompt chains (save & execute). |
+| **4** | Utilities & UX Polish | • Auto splitter & auto summarise.<br>• Custom conversation width & resizable sidebar.<br>• Word/character count, smart replace.<br>• Keyboard shortcuts, scroll controls, copy modes.<br>• Model switcher UI. |
+| **5** | Optional Online Integrations | • Qwen Store (discover & install custom Qwen Apps).<br>• Public prompts library (opt-in).<br>• Newsletter archive fetcher.<br>• Cloud sync option (end-to-end encrypted, opt-in). |
+
+Each phase should be completed **before** moving to the next. Non-local features (Phase 5) are disabled by default and must never block local-first functionality.
+
 
