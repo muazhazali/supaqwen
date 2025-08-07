@@ -1,3 +1,45 @@
-/.output
-/.wxt
-/node_modules
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Build output
+build/
+dist/
+out/
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.*.local
+
+# IDE directories and settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Jest coverage and cache
+.jest/
+
+# Parcel or other bundlers cache
+.parcel-cache/
+
+# Lock files (leave primary lock file committed, ignore others)
+package-lock.json
+yarn.lock
