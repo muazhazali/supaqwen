@@ -105,6 +105,8 @@ All core features work 100 % locally inside your browser. No data ever leaves yo
 
 • 📐 **Resizable Sidebar** – Resize the sidebar for a better overview of long conversation titles.
 
+• 📐 **Resizable Chat Window** – Resize the chat size for a better overview of long conversation chat.
+
 • 🗄️ **Newsletter Archive** – Browse the full newsletter archive directly inside Qwen Chat.
 
 ---
