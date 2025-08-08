@@ -1,8 +1,30 @@
 {
   "manifest_version": 3,
-  "name": "supaqwen",
-  "description": "",
-  "version": "1.0.0",
+  "name": "Qwen Chat with Superpowers",
+  "description": "Local-first Qwen Chat: folders, search, prompt manager, image gallery, voice, export, chains, and more.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "Qwen Chat",
+    "default_popup": "popup.html"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "options_ui": {
+    "page": "options.html"
+  },
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "activeTab",
+    "tabs",
+    "sidePanel",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "http://localhost/*"
+  ],
   "commands": {
     "wxt:reload-extension": {
       "description": "Reload the extension during development",
@@ -14,15 +36,8 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": [
-    "http://localhost/*"
-  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval' http://localhost:3000; object-src 'self';",
     "sandbox": "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:3000; sandbox allow-scripts allow-forms allow-popups allow-modals; child-src 'self';"
-  },
-  "permissions": [
-    "tabs",
-    "scripting"
-  ]
+  }
 }

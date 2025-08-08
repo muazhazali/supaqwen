@@ -1,0 +1,1 @@
+import{c as n,j as e}from"./client-D8ORuQ7S.js";function r(){return e.jsxs("div",{style:{padding:8},children:[e.jsx("h3",{children:"Qwen Side Panel"}),e.jsx("p",{children:"You can add search, pinned messages, or tools here later."})]})}const t=n.createRoot(document.getElementById("root"));t.render(e.jsx(r,{}));
