@@ -23,7 +23,8 @@ export default defineConfig({
       "storage",
       "contextMenus",
       "activeTab",
-      "tabs"
+      "tabs",
+      "scripting"
     ],
     host_permissions: [
       "<all_urls>"

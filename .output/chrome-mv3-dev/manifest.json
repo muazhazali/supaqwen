@@ -18,11 +18,14 @@
     "contextMenus",
     "activeTab",
     "tabs",
-    "sidePanel",
-    "scripting"
+    "scripting",
+    "sidePanel"
   ],
   "host_permissions": [
     "<all_urls>",
+    "https://chat.qwen.ai/*",
+    "https://www.qwen.ai/*",
+    "https://qwen.ai/*",
     "http://localhost/*"
   ],
   "commands": {
