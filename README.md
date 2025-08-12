@@ -1,2 +1,2 @@
 # supaqwen
-superpower qwen
+extension to enhance qwen experience
